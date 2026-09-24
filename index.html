@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f172a" />
+    <title>هم‌سفر</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="topbar glass">
+        <button id="backBtn" class="icon-button ghost" aria-label="بازگشت">←</button>
+        <div>
+          <p class="eyebrow">HAM SAFAR</p>
+          <h1 id="headerTitle">هم‌سفر</h1>
+        </div>
+        <button id="openSettings" class="icon-button ghost" aria-label="تنظیمات">⚙️</button>
+      </header>
+
+      <main>
+        <section id="travelScreen" class="screen active">
+          <div class="travel-header glass">
+            <div class="trip-meta">
+              <span id="tripName">سفر</span>
+              <small id="tripDestination">مقصد</small>
+            </div>
+            <div class="trip-date-box">
+              <span>مدت</span>
+              <strong id="tripDuration">0 روز</strong>
+            </div>
+          </div>
+
+          <div class="tabs glass">
+            <button class="tab-btn active" data-tab="dashboard">داشبورد</button>
+            <button class="tab-btn" data-tab="people">افراد</button>
+            <button class="tab-btn" data-tab="expenses">هزینه‌ها</button>
+            <button class="tab-btn" data-tab="reports">گزارش</button>
+          </div>
+
+          <section id="tab-dashboard" class="tab-panel active">
+            <div class="summary-grid">
+              <article class="summary-card glass">
+                <span>کل هزینه</span>
+                <strong id="totalSpentCard">0</strong>
+              </article>
+              <article class="summary-card glass">
+                <span>هزینه امروز</span>
+                <strong id="todaySpentCard">0</strong>
+              </article>
+              <article class="summary-card glass">
+                <span>هزینه هر نفر</span>
+                <strong id="perPersonCard">0</strong>
+              </article>
+              <article class="summary-card glass budget-card">
+                <span>مانده بودجه</span>
+                <strong id="budgetRemainingCard">0</strong>
+              </article>
+            </div>
+
+            <div class="section-card glass">
+              <div class="section-head">
+                <h3>بودجه سفر</h3>
+                <button id="setBudgetBtn" class="mini-btn secondary">تنظیم بودجه</button>
+              </div>
+              <div class="budget-meter">
+                <div id="budgetFill" class="budget-fill"></div>
+              </div>
+              <div class="budget-meta">
+                <span id="budgetUsageText">0٪ مصرف شده</span>
+                <strong id="budgetStatusText">در محدوده</strong>
+              </div>
+            </div>
+
+            <div class="section-card glass">
+              <div class="section-head">
+                <h3>اقدامات سریع</h3>
+              </div>
+              <div class="quick-actions">
+                <button class="action-btn" data-action="add-expense">➕ هزینه</button>
+                <button class="action-btn" data-action="add-person">👥 افراد</button>
+                <button class="action-btn" data-action="add-pool">💳 کارت دنگ</button>
+                <button class="action-btn" data-action="open-reports">📊 گزارش</button>
+                <button class="action-btn" data-action="open-itinerary">🗺 برنامه سفر</button>
+              </div>
+            </div>
+
+            <div class="charts-grid">
+              <div class="chart-card glass">
+                <div class="section-head"><h3>هزینه بر اساس دسته</h3></div>
+                <div id="categoryChart" class="bar-chart"></div>
+              </div>
+              <div class="chart-card glass">
+                <div class="section-head"><h3>هزینه افراد</h3></div>
+                <div id="personChart" class="bar-chart vertical"></div>
+              </div>
+            </div>
+
+            <div class="section-card glass">
+              <div class="section-head"><h3>آخرین هزینه‌ها</h3><button id="showAllExpenses" class="mini-btn ghost">مشاهده همه</button></div>
+              <div id="recentExpenses" class="list-stack"></div>
+            </div>
+
+            <div class="section-card glass">
+              <div class="section-head"><h3>تسویه حساب</h3></div>
+              <div id="settlementSummary" class="list-stack"></div>
+            </div>
+
+            <div class="section-card glass">
+              <div class="section-head"><h3>پیشنهاد هوشمند</h3></div>
+              <div id="aiSuggestion" class="ai-suggestion"></div>
+            </div>
+          </section>
+
+          <section id="tab-people" class="tab-panel">
+            <div class="toolbar">
+              <button id="addPersonBtn" class="primary-btn">+ افزودن فرد</button>
+            </div>
+            <div id="peopleList" class="list-stack"></div>
+          </section>
+
+          <section id="tab-expenses" class="tab-panel">
+            <div class="toolbar">
+              <input id="expenseSearch" type="text" class="base-input" placeholder="جستجو ..." aria-label="جستجوی هزینه" />
+              <select id="expenseFilterPerson" class="base-input" aria-label="فیلتر شخص"></select>
+              <button id="addExpenseBtn" class="primary-btn">+ ثبت هزینه</button>
+            </div>
+            <div id="expenseList" class="list-stack"></div>
+          </section>
+
+          <section id="tab-reports" class="tab-panel">
+            <div class="report-grid">
+              <div class="report-box glass">
+                <span>تعداد تراکنش‌ها</span>
+                <strong id="reportTransactionCount">0</strong>
+              </div>
+              <div class="report-box glass">
+                <span>میانگین روزانه</span>
+                <strong id="reportDailyAvg">0</strong>
+              </div>
+              <div class="report-box glass">
+                <span>گران‌ترین روز</span>
+                <strong id="reportMostExpensiveDay">—</strong>
+              </div>
+              <div class="report-box glass">
+                <span>گران‌ترین دسته</span>
+                <strong id="reportMostExpensiveCategory">—</strong>
+              </div>
+            </div>
+            <div class="section-card glass">
+              <div class="section-head"><h3>گزارش کلی</h3><button id="csvExportBtn" class="mini-btn secondary">CSV</button></div>
+              <div id="reportSummary" class="report-summary"></div>
+            </div>
+            <div class="section-card glass">
+              <div class="section-head"><h3>تقسیم هزینه</h3></div>
+              <div id="balanceSummary" class="list-stack"></div>
+            </div>
+          </section>
+        </section>
+
+        <section id="voiceScreen" class="screen">
+          <div class="voice-panel glass">
+            <div class="voice-header">
+              <h2>صدا</h2>
+              <span id="voiceStatusText">آماده</span>
+            </div>
+            <div class="waveform-wrap">
+              <div class="waveform">
+                <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+              </div>
+            </div>
+            <button id="voiceToggle" class="voice-button" aria-label="شروع یا توقف ضبط صدا">🎙️</button>
+            <div class="voice-output glass">
+              <p id="voiceResultText">برای ثبت هزینه با صدا، جمله‌ای مثل «حسین ۳۰۰ هزار تومان بنزین» را بگو.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="aiScreen" class="screen">
+          <div class="ai-header glass">
+            <div class="ai-bot">
+              <span class="bot-dot"></span>
+              <strong>هم‌یار سفر</strong>
+            </div>
+            <small id="aiModeLabel">دستیار محلی فعال است</small>
+          </div>
+
+          <div id="aiMessages" class="chat-box"></div>
+
+          <div class="chat-input-wrap glass">
+            <button id="aiVoiceBtn" class="icon-button" aria-label="صوتی">🎤</button>
+            <input id="aiInput" type="text" class="base-input" placeholder="سؤال خود را بپرسید..." aria-label="پیام هوش مصنوعی" />
+            <button id="aiSendBtn" class="primary-btn">ارسال</button>
+          </div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav glass" aria-label="ناوبری اصلی">
+        <button class="nav-item active" data-screen="travel" aria-label="سفر">
+          <span>🧳</span>
+          <small>سفر</small>
+        </button>
+        <button class="nav-item voice-nav" data-screen="voice" aria-label="Voice">
+          <span>🎙️</span>
+          <small>Voice</small>
+        </button>
+        <button class="nav-item" data-screen="ai" aria-label="AI">
+          <span>🤖</span>
+          <small>AI</small>
+        </button>
+      </nav>
+    </div>
+
+    <div id="welcomeModal" class="modal active" role="dialog" aria-modal="true">
+      <div class="sheet glass">
+        <h2>به هم‌سفر خوش آمدی</h2>
+        <p>اولین سفر خود را بساز و وضعیت هزینه‌ها را یک‌جا مدیریت کن.</p>
+        <form id="tripCreateForm" class="form-grid">
+          <label>
+            نام سفر
+            <input id="tripNameInput" type="text" class="base-input" placeholder="مثلاً سفر شمال" required />
+          </label>
+          <label>
+            مقصد
+            <input id="tripDestinationInput" type="text" class="base-input" placeholder="رشت و انزلی" required />
+          </label>
+          <label>
+            تاریخ شروع
+            <input id="tripStartDateInput" type="date" class="base-input" />
+          </label>
+          <label>
+            مدت سفر (روز)
+            <input id="tripDurationInput" type="number" class="base-input" min="1" value="5" />
+          </label>
+          <label>
+            بودجه کل
+            <input id="tripBudgetInput" type="number" class="base-input" min="0" value="20000000" />
+          </label>
+          <div class="people-group">
+            <label>افراد</label>
+            <input id="peopleInput" type="text" class="base-input" placeholder="حسین، علی، رضا" />
+          </div>
+          <button type="submit" class="primary-btn">ایجاد سفر</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="peopleModal" class="modal" role="dialog" aria-modal="true">
+      <div class="sheet glass">
+        <div class="sheet-head">
+          <h3>افراد سفر</h3>
+          <button class="icon-button ghost close-modal" data-target="peopleModal">✕</button>
+        </div>
+        <form id="peopleForm" class="form-grid">
+          <input id="peopleNameInput" type="text" class="base-input" placeholder="نام فرد" required />
+          <button type="submit" class="primary-btn">افزودن</button>
+        </form>
+        <div id="peopleModalList" class="mini-list"></div>
+      </div>
+    </div>
+
+    <div id="expenseModal" class="modal" role="dialog" aria-modal="true">
+      <div class="sheet glass large-sheet">
+        <div class="sheet-head">
+          <h3>ثبت هزینه</h3>
+          <button class="icon-button ghost close-modal" data-target="expenseModal">✕</button>
+        </div>
+        <form id="expenseForm" class="form-grid">
+          <label>
+            پرداخت‌کننده
+            <select id="expensePayer" class="base-input"></select>
+          </label>
+          <label>
+            مبلغ
+            <input id="expenseAmount" type="number" class="base-input" min="0" required />
+          </label>
+          <label>
+            واحد پول
+            <select id="expenseCurrency" class="base-input">
+              <option value="IRR">تومان</option>
+              <option value="TRY">لیر</option>
+              <option value="AED">درهم</option>
+              <option value="EUR">یورو</option>
+              <option value="USD">دلار</option>
+            </select>
+          </label>
+          <label>
+            دسته‌بندی
+            <select id="expenseCategory" class="base-input"></select>
+          </label>
+          <label>
+            زیرمجموعه
+            <select id="expenseSubCategory" class="base-input"></select>
+          </label>
+          <label>
+            روش پرداخت
+            <select id="expensePaymentMethod" class="base-input">
+              <option value="person">💰 شخصی</option>
+              <option value="pool">💳 کارت دنگ</option>
+            </select>
+          </label>
+          <label>
+            روش تقسیم
+            <select id="expenseSplitMode" class="base-input">
+              <option value="equal">Equal</option>
+              <option value="amount">Amount</option>
+              <option value="percent">Percentage</option>
+              <option value="shares">Shares</option>
+            </select>
+          </label>
+          <div id="splitConfigWrap" class="split-config-wrap"></div>
+          <label>
+            افراد ذی‌نفع
+            <select id="expenseBeneficiaries" class="base-input" multiple></select>
+          </label>
+          <label>
+            توضیح
+            <input id="expenseNote" type="text" class="base-input" placeholder="مثلاً بنزین مسیر" />
+          </label>
+          <label>
+            تاریخ
+            <input id="expenseDate" type="date" class="base-input" />
+          </label>
+          <button type="submit" class="primary-btn">ثبت هزینه</button>
+        </form>
+      </div>
+    </div>
+
+    <div id="settingsModal" class="modal" role="dialog" aria-modal="true">
+      <div class="sheet glass large-sheet">
+        <div class="sheet-head">
+          <h3>تنظیمات</h3>
+          <button class="icon-button ghost close-modal" data-target="settingsModal">✕</button>
+        </div>
+        <div class="settings-grid">
+          <div class="settings-card glass">
+            <h4>ظاهر</h4>
+            <label>Theme
+              <select id="themeSelect" class="base-input">
+                <option value="dark">Dark</option>
+                <option value="light">Light</option>
+                <option value="spring">Spring</option>
+                <option value="autumn">Autumn</option>
+                <option value="winter">Winter</option>
+                <option value="night">Night</option>
+              </select>
+            </label>
+            <label><input id="animationToggle" type="checkbox" checked /> Animation</label>
+          </div>
+
+          <div class="settings-card glass">
+            <h4>صدا</h4>
+            <label>Voice language
+              <select id="voiceLangSelect" class="base-input">
+                <option value="fa-IR">fa-IR</option>
+              </select>
+            </label>
+            <label><input id="autoReadToggle" type="checkbox" /> Auto read AI</label>
+          </div>
+
+          <div class="settings-card glass">
+            <h4>AI</h4>
+            <label>Provider
+              <select id="aiProviderSelect" class="base-input">
+                <option value="local">Local</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+            <label>Model
+              <input id="aiModelInput" type="text" class="base-input" value="local-context-model" />
+            </label>
+            <label>Endpoint
+              <input id="aiEndpointInput" type="text" class="base-input" placeholder="https://..." />
+            </label>
+            <label>API Key
+              <input id="aiKeyInput" type="password" class="base-input" placeholder="••••••••" />
+            </label>
+          </div>
+
+          <div class="settings-card glass">
+            <h4>داده</h4>
+            <button id="backupBtn" class="secondary-btn full-width">پشتیبان‌گیری</button>
+            <label class="file-upload">
+              <span>Restore</span>
+              <input id="restoreInput" type="file" accept="application/json" />
+            </label>
+            <button id="csvExportBtnSettings" class="secondary-btn full-width">Export CSV</button>
+            <button id="resetDataBtn" class="danger-btn full-width">Reset data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="toast" class="toast" aria-live="polite"></div>
+
+    <script src="js/app.js"></script>
+  </body>
+</html>
